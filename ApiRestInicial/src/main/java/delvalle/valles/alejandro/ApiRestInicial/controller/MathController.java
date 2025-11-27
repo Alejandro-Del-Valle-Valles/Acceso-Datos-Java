@@ -32,7 +32,7 @@ public class MathController {
     }
 
     @GetMapping("/producto/{numberOne}/{numberTwo}")
-    public String getMultiplication(@PathVariable int numberOne, @PathVariable  int numberTwo) {
+    public String getMultiplication(@PathVariable int numberOne, @PathVariable int numberTwo) {
         return numberOne + " X " + numberTwo + " = " +  (numberOne * numberTwo);
     }
 }

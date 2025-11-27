@@ -2,8 +2,10 @@ package delvalle.valles.alejandro.ApiRestInicial.controller;
 
 import delvalle.valles.alejandro.ApiRestInicial.model.ReplaceDTO;
 import delvalle.valles.alejandro.ApiRestInicial.repository.NumbersRepository;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,19 +21,19 @@ public class ListController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addNumber(@RequestParam int number) {
+    public ResponseEntity<?> addNumber(@RequestParam int number) {
         if(number <= 0) {
-            return ResponseEntity.badRequest().body("400");
+            return ResponseEntity.badRequest().body("Incorrecto");
         } else {
             NumbersRepository.numbersList.add(number);
-            return ResponseEntity.ok("200");
+            return ResponseEntity.ok(NumbersRepository.numbersList);
         }
     }
 
     @GetMapping("/{number}")
     public ResponseEntity<?> getListOverNumber(@PathVariable int number) {
         if(number < 0) {
-            return ResponseEntity.badRequest().body("442");
+            return ResponseEntity.status(HttpStatusCode.valueOf(422)).body("Incorrecto");
         } else {
             return ResponseEntity.ok(NumbersRepository.numbersList
                     .stream().filter(n -> n >= number)
@@ -62,15 +64,14 @@ public class ListController {
 
     @DeleteMapping("/{number}")
     public List<Integer> deleteNumber(@PathVariable int number) {
-        NumbersRepository.numbersList.removeAll(Collections.singletonList(number));
+        NumbersRepository.numbersList.removeIf(n -> n == number);
         return NumbersRepository.numbersList;
     }
 
     @GetMapping("/media")
-    public int getMedia() {
-        AtomicInteger total = new AtomicInteger();
-        NumbersRepository.numbersList.forEach(total::addAndGet);
-        if(total.get() == 0) return 0;
-        return total.get() / NumbersRepository.numbersList.size();
+    public float getMedia() {
+        float total = Math.round(NumbersRepository.numbersList.stream().mapToInt(n -> n).average().orElse(0));
+        if(total == 0) return 0;
+        return total / NumbersRepository.numbersList.size();
     }
 }
