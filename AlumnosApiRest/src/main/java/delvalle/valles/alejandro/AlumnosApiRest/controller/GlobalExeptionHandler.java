@@ -1,6 +1,8 @@
 package delvalle.valles.alejandro.AlumnosApiRest.controller;
 
+import delvalle.valles.alejandro.AlumnosApiRest.exceptions.AlumnoAlreadyExistsException;
 import delvalle.valles.alejandro.AlumnosApiRest.exceptions.AlumnoNotFoundException;
+import delvalle.valles.alejandro.AlumnosApiRest.model.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,8 +15,13 @@ import java.util.stream.Collectors;
 public class GlobalExeptionHandler {
 
     @ExceptionHandler(AlumnoNotFoundException.class)
-    public ResponseEntity<String> alumnoNotFound(AlumnoNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> alumnoNotFound(AlumnoNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage(), "Alumno no encontrado"));
+    }
+
+    @ExceptionHandler(AlumnoAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> alumnoAlreayExists(AlumnoAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(ex.getMessage(), "Alumno ya existente."));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -3,12 +3,13 @@ package delvalle.valles.alejandro.AlumnosApiRest.model;
 import java.time.LocalDate;
 import java.util.Objects;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 
 public class AlumnoDTO {
 
-    @NotBlank(message = "El nia no puede estar vacío")
+    @NotNull(message = "El nia no puede estar vacío")
     @Positive(message = "El nia debe ser mayor que 0")
     private int nia;
 
@@ -18,9 +19,11 @@ public class AlumnoDTO {
     @NotBlank(message = "El apellido no puede estar vacío")
     private String surname;
 
-    @NotBlank(message = "La fecha no puede estar vacía")
+    @NotNull(message = "La fecha de nacimiento no puede estar vacía")
     @PastOrPresent(message = "La fecha no puede ser superior a hoy.")
     private LocalDate bornDate;
+
+    public AlumnoDTO() {}
 
     public AlumnoDTO(int nia, String name, String surname, LocalDate bornDate) {
         this.nia = nia;
