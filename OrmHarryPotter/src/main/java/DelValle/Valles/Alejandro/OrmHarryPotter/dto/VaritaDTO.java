@@ -26,7 +26,7 @@ public class VaritaDTO {
     public VaritaDTO() {
     }
 
-    public VaritaDTO(String madera, BigDecimal longitud, String nucleo, boolean rota, int idPersonaje, String personaje) {
+    public VaritaDTO(String madera, String nucleo, BigDecimal longitud, boolean rota, int idPersonaje, String personaje) {
         this.madera = madera;
         this.longitud = longitud;
         this.nucleo = nucleo;
