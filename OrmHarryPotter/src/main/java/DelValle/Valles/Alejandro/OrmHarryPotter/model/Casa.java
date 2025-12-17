@@ -11,7 +11,7 @@ public class Casa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private int id;
+    private Integer id;
 
     @Column(length = 50, nullable = true)
     private String escudo_imagen;

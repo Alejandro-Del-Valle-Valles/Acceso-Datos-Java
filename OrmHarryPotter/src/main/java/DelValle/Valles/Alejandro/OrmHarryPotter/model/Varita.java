@@ -10,7 +10,7 @@ public class Varita {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(nullable = false, precision = 5, scale = 2)
     private BigDecimal longitud;
@@ -29,6 +29,14 @@ public class Varita {
     private Personaje personaje;
 
     public Varita() {
+    }
+
+    public Varita(BigDecimal longitud, String madera, String nucleo, boolean rota, Personaje personaje) {
+        this.longitud = longitud;
+        this.madera = madera;
+        this.nucleo = nucleo;
+        this.rota = rota;
+        this.personaje = personaje;
     }
 
     public Varita(int id, BigDecimal longitud, String madera, String nucleo, boolean rota, Personaje personaje) {

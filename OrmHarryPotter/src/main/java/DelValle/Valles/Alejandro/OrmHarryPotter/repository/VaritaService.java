@@ -38,4 +38,13 @@ public interface VaritaService {
      * @return List<Varita>
      */
     public List<Varita> findByPersonaje(Personaje personaje);
+
+    /**
+     * Return a list of Varitas if they are broken or not.
+     * @param rota true if want to get the broken varitas, false otherwise.
+     * @return List<Varita>
+     */
+    public List<Varita> findByRota(boolean rota);
+
+    public  List<Varita> findByNucleoContainingIgnoreCase(String nucleo);
 }

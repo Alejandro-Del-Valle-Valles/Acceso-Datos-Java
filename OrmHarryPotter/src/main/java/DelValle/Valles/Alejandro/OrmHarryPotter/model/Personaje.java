@@ -11,7 +11,7 @@ public class Personaje {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private int id;
+    private Integer id;
 
     @Column(name = "fecha_nacimiento")
     private LocalDate fechaNacimiento;

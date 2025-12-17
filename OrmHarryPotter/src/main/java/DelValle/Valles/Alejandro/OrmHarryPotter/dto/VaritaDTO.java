@@ -20,13 +20,13 @@ public class VaritaDTO {
     @NotNull
     private boolean rota;
 
-    private int idPersonaje;
+    private Integer idPersonaje;
     private String personaje;
 
     public VaritaDTO() {
     }
 
-    public VaritaDTO(String madera, String nucleo, BigDecimal longitud, boolean rota, int idPersonaje, String personaje) {
+    public VaritaDTO(String madera, String nucleo, BigDecimal longitud, boolean rota, Integer idPersonaje, String personaje) {
         this.madera = madera;
         this.longitud = longitud;
         this.nucleo = nucleo;
@@ -67,11 +67,11 @@ public class VaritaDTO {
         this.rota = rota;
     }
 
-    public int getIdPersonaje() {
+    public Integer getIdPersonaje() {
         return idPersonaje;
     }
 
-    public void setIdPersonaje(int idPersonaje) {
+    public void setIdPersonaje(Integer idPersonaje) {
         this.idPersonaje = idPersonaje;
     }
 
@@ -80,14 +80,14 @@ public class VaritaDTO {
     }
 
     public void setPersonaje(String personaje) {
-        this.personaje = personaje.isBlank() ? "Sin Asignar" : personaje.trim();
+        this.personaje = personaje == null || personaje.isBlank() ? "Sin Asignar" : personaje.trim();
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         VaritaDTO varitaDTO = (VaritaDTO) o;
-        return rota == varitaDTO.rota && idPersonaje == varitaDTO.idPersonaje && Objects.equals(madera, varitaDTO.madera) && Objects.equals(longitud, varitaDTO.longitud) && Objects.equals(nucleo, varitaDTO.nucleo) && Objects.equals(personaje, varitaDTO.personaje);
+        return rota == varitaDTO.rota && idPersonaje.equals(varitaDTO.idPersonaje) && Objects.equals(madera, varitaDTO.madera) && Objects.equals(longitud, varitaDTO.longitud) && Objects.equals(nucleo, varitaDTO.nucleo) && Objects.equals(personaje, varitaDTO.personaje);
     }
 
     @Override

@@ -10,7 +10,7 @@ public class Hechizo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private long id;
+    private Long id;
 
     @Column(nullable = false)
     private String descripcion;

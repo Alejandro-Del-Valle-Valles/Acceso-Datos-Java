@@ -65,4 +65,14 @@ public class VaritaServiceImpl implements VaritaService {
     public List<Varita> findByPersonaje(Personaje personaje) {
         return varitaRepository.findByPersonaje(personaje);
     }
+
+    @Override
+    public List<Varita> findByRota(boolean rota) {
+        return varitaRepository.findByRota(rota);
+    }
+
+    @Override
+    public List<Varita> findByNucleoContainingIgnoreCase(String nucleo) {
+        return varitaRepository.findByNucleoContainingIgnoreCase(nucleo);
+    }
 }
