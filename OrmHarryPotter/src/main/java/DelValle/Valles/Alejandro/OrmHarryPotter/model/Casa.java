@@ -28,19 +28,23 @@ public class Casa {
     public Casa() {
     }
 
-    public Casa(int id, String escudo_imagen, String fundador, String nombre, List<Personaje> personajes) {
-        this.id = id;
+    public Casa(String escudo_imagen, String fundador, String nombre, List<Personaje> personajes) {
         this.escudo_imagen = escudo_imagen;
         this.fundador = fundador;
         this.nombre = nombre;
         this.personajes = personajes;
     }
 
-    public int getId() {
+    public Casa(Integer id, String escudo_imagen, String fundador, String nombre, List<Personaje> personajes) {
+        this(escudo_imagen, fundador, nombre, personajes);
+        this.id = id;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -80,7 +84,7 @@ public class Casa {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Casa casa = (Casa) o;
-        return getId() == casa.getId();
+        return getId().equals(casa.getId());
     }
 
     @Override

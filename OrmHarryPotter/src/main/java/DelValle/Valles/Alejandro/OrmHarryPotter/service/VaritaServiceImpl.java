@@ -3,7 +3,7 @@ package DelValle.Valles.Alejandro.OrmHarryPotter.service;
 import DelValle.Valles.Alejandro.OrmHarryPotter.model.Personaje;
 import DelValle.Valles.Alejandro.OrmHarryPotter.model.Varita;
 import DelValle.Valles.Alejandro.OrmHarryPotter.repository.VaritaRepository;
-import DelValle.Valles.Alejandro.OrmHarryPotter.repository.VaritaService;
+import DelValle.Valles.Alejandro.OrmHarryPotter.interfaces.VaritaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

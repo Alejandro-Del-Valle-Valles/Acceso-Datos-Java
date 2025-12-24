@@ -40,12 +40,8 @@ public class Varita {
     }
 
     public Varita(int id, BigDecimal longitud, String madera, String nucleo, boolean rota, Personaje personaje) {
+        this(longitud, madera, nucleo, rota, personaje);
         this.id = id;
-        this.longitud = longitud;
-        this.madera = madera;
-        this.nucleo = nucleo;
-        this.rota = rota;
-        this.personaje = personaje;
     }
 
     public int getId() {

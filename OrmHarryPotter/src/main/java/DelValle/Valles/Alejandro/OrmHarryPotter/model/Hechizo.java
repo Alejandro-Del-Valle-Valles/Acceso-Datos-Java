@@ -27,19 +27,23 @@ public class Hechizo {
     public Hechizo() {
     }
 
-    public Hechizo(long id, String descripcion, String nombre, String tipo, List<Personaje> personajes) {
-        this.id = id;
+    public Hechizo(String descripcion, String nombre, String tipo, List<Personaje> personajes) {
         this.descripcion = descripcion;
         this.nombre = nombre;
         this.tipo = tipo;
         this.personajes = personajes;
     }
 
-    public long getId() {
+    public Hechizo(Long id, String descripcion, String nombre, String tipo, List<Personaje> personajes) {
+        this(descripcion, nombre, tipo, personajes);
+        this.id = id;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -79,7 +83,7 @@ public class Hechizo {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Hechizo hechizo = (Hechizo) o;
-        return getId() == hechizo.getId();
+        return getId().equals(hechizo.getId());
     }
 
     @Override

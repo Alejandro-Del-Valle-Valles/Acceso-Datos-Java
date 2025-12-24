@@ -3,9 +3,13 @@ package DelValle.Valles.Alejandro.OrmHarryPotter.controller;
 import DelValle.Valles.Alejandro.OrmHarryPotter.dto.CrearVaritaDTO;
 import DelValle.Valles.Alejandro.OrmHarryPotter.dto.VaritaDTO;
 import DelValle.Valles.Alejandro.OrmHarryPotter.dto.VaritaResumenDTO;
+import DelValle.Valles.Alejandro.OrmHarryPotter.exceptions.VaritaAlreadyExistException;
+import DelValle.Valles.Alejandro.OrmHarryPotter.exceptions.VaritaNotCreatedUpdatedException;
+import DelValle.Valles.Alejandro.OrmHarryPotter.exceptions.VaritaNotFoundException;
 import DelValle.Valles.Alejandro.OrmHarryPotter.model.Personaje;
 import DelValle.Valles.Alejandro.OrmHarryPotter.model.Varita;
-import DelValle.Valles.Alejandro.OrmHarryPotter.repository.VaritaService;
+import DelValle.Valles.Alejandro.OrmHarryPotter.interfaces.VaritaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -93,7 +97,7 @@ public class VaritaController {
     }
 
     @PostMapping
-    public ResponseEntity<?> postVaritaMadera(@RequestBody CrearVaritaDTO varita) {
+    public ResponseEntity<?> postVaritaMadera(@Valid @RequestBody CrearVaritaDTO varita) {
         Varita newVarita = new Varita(varita.getLongitud(), varita.getMadera(), varita.getNucleo(),
                 false, null);
         if(varitaService.findById(newVarita.getId()) == null) {
@@ -107,7 +111,22 @@ public class VaritaController {
                         insertedPersonaje == null ? null : insertedPersonaje.getNombre()
                 );
                 return ResponseEntity.status(HttpStatus.CREATED).body(varitaDTO);
-            } else return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Error al crear varita.");
-        } else return ResponseEntity.status(HttpStatus.CONFLICT).body("Varita ya existente");
+            } else throw new VaritaNotCreatedUpdatedException();
+        } else throw new VaritaAlreadyExistException();
+    }
+
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<?> deleteVarita(@PathVariable int id) {
+        Varita varita = varitaService.findById(id);
+        if(varita != null) {
+            varitaService.delete(varita);
+            Personaje personaje = varita.getPersonaje();
+            VaritaResumenDTO deleted = new VaritaResumenDTO(
+                    varita.getId(), String.format("%s. %s", varita.getMadera(), varita.getNucleo()),
+                    varita.getLongitud(), varita.isRota(),
+                    personaje == null ? null : personaje.getNombre()
+            );
+            return  ResponseEntity.status(HttpStatus.OK).body(varita);
+        } else throw new VaritaNotFoundException(id);
     }
 }

@@ -1,0 +1,137 @@
+package DelValle.Valles.Alejandro.OrmHarryPotter.controller;
+
+import DelValle.Valles.Alejandro.OrmHarryPotter.dto.CrearPersonajeVaritaDTO;
+import DelValle.Valles.Alejandro.OrmHarryPotter.dto.CrearVaritaDTO;
+import DelValle.Valles.Alejandro.OrmHarryPotter.dto.PersonajeDTO;
+import DelValle.Valles.Alejandro.OrmHarryPotter.dto.CrearPersonajeDTO;
+import DelValle.Valles.Alejandro.OrmHarryPotter.exceptions.CasaNotFoundException;
+import DelValle.Valles.Alejandro.OrmHarryPotter.exceptions.PersonajeNotCreatedUpdatedException;
+import DelValle.Valles.Alejandro.OrmHarryPotter.exceptions.PersonajeNotFoundException;
+import DelValle.Valles.Alejandro.OrmHarryPotter.exceptions.VaritaNotFoundException;
+import DelValle.Valles.Alejandro.OrmHarryPotter.interfaces.CasaService;
+import DelValle.Valles.Alejandro.OrmHarryPotter.interfaces.PersonajeService;
+import DelValle.Valles.Alejandro.OrmHarryPotter.interfaces.VaritaService;
+import DelValle.Valles.Alejandro.OrmHarryPotter.model.Casa;
+import DelValle.Valles.Alejandro.OrmHarryPotter.model.Hechizo;
+import DelValle.Valles.Alejandro.OrmHarryPotter.model.Personaje;
+import DelValle.Valles.Alejandro.OrmHarryPotter.model.Varita;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+@RequestMapping("/personaje")
+public class PersonajeController {
+
+    private final PersonajeService personajeService;
+    private final CasaService casaService;
+    private final VaritaService varitaService;
+
+    @Autowired
+    public PersonajeController(PersonajeService personajeService, CasaService casaService, VaritaService varitaService) {
+        this.personajeService = personajeService;
+        this.casaService = casaService;
+        this.varitaService = varitaService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<PersonajeDTO>> findAll() {
+        List<PersonajeDTO> personajeDTOS = new ArrayList<>();
+        personajeService.findAll().forEach(personaje -> {
+            personajeDTOS.add(
+                    createPersonajeDTO(personaje)
+            );
+        });
+        return ResponseEntity.ok().body(personajeDTOS);
+    }
+
+    @PostMapping("/crear")
+    public ResponseEntity<?> create(@Valid @RequestBody CrearPersonajeDTO personaje) {
+        Casa casa = casaService.findByName(personaje.getNombreCasa());
+        Personaje newPersonaje = new Personaje(
+                personaje.getFechaNacimiento(), personaje.getNombre(), personaje.getSangre().toString(),
+                casa, new ArrayList<Varita>(), new ArrayList<Hechizo>());
+        if(personajeService.findById(newPersonaje.getId()) != null) {
+            personajeService.save(newPersonaje);
+            PersonajeDTO personajeDTO = new PersonajeDTO(
+                    newPersonaje.getId(), newPersonaje.getNombre(), newPersonaje.getFechaNacimiento(),
+                    newPersonaje.getSangre(), newPersonaje.getCasa().getNombre()
+            );
+            return ResponseEntity.status(HttpStatus.CREATED).body(personajeDTO);
+        } else throw new PersonajeNotCreatedUpdatedException();
+    }
+
+    @GetMapping("/nombre/{palabra}")
+    public ResponseEntity<List<PersonajeDTO>> containsInName(@PathVariable String palabra) {
+        List<PersonajeDTO> personajeDTOS = new ArrayList<>();
+        personajeService.findByNombreContainingIgnoreCase(palabra).forEach(personaje -> {
+            personajeDTOS.add(
+                    createPersonajeDTO(personaje)
+            );
+        });
+        return ResponseEntity.ok().body(personajeDTOS);
+    }
+
+    @GetMapping("/casa/{nombreCasa}")
+    public ResponseEntity<List<PersonajeDTO>> areFromHouse(@PathVariable String nombreCasa) {
+        List<PersonajeDTO> personajeDTOS = new ArrayList<>();
+        personajeService.findByCasaNombre(nombreCasa).forEach(personaje -> {
+            personajeDTOS.add(
+                    createPersonajeDTO(personaje)
+            );
+        });
+        return ResponseEntity.ok().body(personajeDTOS);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findById(@PathVariable Integer id) {
+        Personaje personaje = personajeService.findById(id);
+        if(personaje != null) {
+            return ResponseEntity.ok().body(createPersonajeDTO(personaje));
+        } else throw new PersonajeNotFoundException(id);
+    }
+
+    @PutMapping("/{idPersonaje}/varita/{idVarita}")
+    public ResponseEntity<?> updatePersonajeVarita(@PathVariable Integer idPersonaje, @PathVariable Integer idVarita) {
+        Personaje personaje = personajeService.findById(idPersonaje);
+        Varita nuevaVarita = varitaService.findById(idVarita);
+
+        if (personaje == null) throw new PersonajeNotFoundException(idPersonaje);
+        if (nuevaVarita == null) throw new VaritaNotFoundException(idVarita);
+        if (nuevaVarita.isRota()) return ResponseEntity.status(HttpStatus.CONFLICT).body("La varita está rota.");
+
+        if (personaje.getVaritas() != null) {
+            for (Varita v : personaje.getVaritas()) {
+                v.setPersonaje(null);
+            }
+            personaje.getVaritas().clear();
+        }
+        personaje.addVarita(nuevaVarita);
+        personajeService.save(personaje);
+        return ResponseEntity.ok(createPersonajeDTO(personaje));
+    }
+
+    @PostMapping("/crear-con-varita")
+    public ResponseEntity<?> createPersonajeWithVarita(@Valid @RequestBody CrearPersonajeVaritaDTO personaje) {
+        CrearVaritaDTO varitaDTO = personaje.getCrearVaritaDTO();
+        Casa casa = casaService.findByName(personaje.getNombreCasa());
+        if(casa == null) throw new CasaNotFoundException(personaje.getNombreCasa());
+        Personaje newPersonaje = new Personaje(personaje.getFechaNacimiento(), personaje.getNombre(),
+                personaje.getSangre().toString(), casa, new ArrayList<>(), new ArrayList<>());
+        Varita nuevaVarita = new Varita(varitaDTO.getLongitud(), varitaDTO.getMadera(),
+                varitaDTO.getNucleo(), false, newPersonaje);
+        newPersonaje.addVarita(nuevaVarita);
+        personajeService.save(newPersonaje);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createPersonajeDTO(newPersonaje));
+    }
+
+    private PersonajeDTO createPersonajeDTO(Personaje personaje) {
+        return new PersonajeDTO(personaje.getId(), personaje.getNombre(), personaje.getFechaNacimiento(),
+                personaje.getSangre(), personaje.getCasa().getNombre());
+    }
+}

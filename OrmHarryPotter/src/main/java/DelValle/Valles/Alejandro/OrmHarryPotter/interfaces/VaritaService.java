@@ -1,4 +1,4 @@
-package DelValle.Valles.Alejandro.OrmHarryPotter.repository;
+package DelValle.Valles.Alejandro.OrmHarryPotter.interfaces;
 
 import DelValle.Valles.Alejandro.OrmHarryPotter.model.Personaje;
 import DelValle.Valles.Alejandro.OrmHarryPotter.model.Varita;
@@ -46,5 +46,10 @@ public interface VaritaService {
      */
     public List<Varita> findByRota(boolean rota);
 
+    /**
+     * Return a list of Varitas if the nucelo contains the inserted text
+     * @param nucleo String searched nucleo
+     * @return List<Varita>
+     */
     public  List<Varita> findByNucleoContainingIgnoreCase(String nucleo);
 }

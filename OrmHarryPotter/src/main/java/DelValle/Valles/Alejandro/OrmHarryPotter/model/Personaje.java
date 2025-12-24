@@ -40,8 +40,7 @@ public class Personaje {
     public Personaje() {
     }
 
-    public Personaje(int id, LocalDate fechaNacimiento, String nombre, String sangre, Casa casa, List<Varita> varitas, List<Hechizo> hechizos) {
-        this.id = id;
+    public Personaje(LocalDate fechaNacimiento, String nombre, String sangre, Casa casa, List<Varita> varitas, List<Hechizo> hechizos) {
         this.fechaNacimiento = fechaNacimiento;
         this.nombre = nombre;
         this.sangre = sangre;
@@ -50,11 +49,16 @@ public class Personaje {
         this.hechizos = hechizos;
     }
 
-    public int getId() {
+    public Personaje(Integer id, LocalDate fechaNacimiento, String nombre, String sangre, Casa casa, List<Varita> varitas, List<Hechizo> hechizos) {
+        this(fechaNacimiento, nombre, sangre, casa, varitas, hechizos);
+        this.id = id;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -98,6 +102,12 @@ public class Personaje {
         this.varitas = varitas;
     }
 
+    public void addVarita(Varita varita) {
+        this.varitas.add(varita);
+        varita.setPersonaje(this);
+    }
+    public void deleteVarita(Varita varita) {this.varitas.remove(varita); }
+
     public List<Hechizo> getHechizos() {
         return hechizos;
     }
@@ -110,7 +120,7 @@ public class Personaje {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Personaje personaje = (Personaje) o;
-        return getId() == personaje.getId();
+        return getId().equals(personaje.getId());
     }
 
     @Override
