@@ -31,52 +31,33 @@ public class VaritaController {
 
     @GetMapping
     public ResponseEntity<List<VaritaDTO>> getAllVaritas() {
-        List<VaritaDTO> varitas = new ArrayList<>();
-        varitaService.findAll().forEach(varita -> varitas.add(new VaritaDTO(
-                varita.getMadera(), varita.getNucleo(), varita.getLongitud(),
-                varita.isRota(),
-                varita.getPersonaje() == null ? null : varita.getPersonaje().getId(),
-                varita.getPersonaje() == null ? null : varita.getPersonaje().getNombre()
-        )));
+        List<VaritaDTO> varitas = varitaService.findAll().stream()
+                .map(this::createVaritaDTO)
+                .toList();
         return ResponseEntity.ok(varitas);
     }
 
     @GetMapping("/rota")
     public ResponseEntity<List<VaritaDTO>> getAllRotas(@RequestParam boolean rotas) {
-        List<VaritaDTO> varitas = new ArrayList<>();
-        varitaService.findByRota(rotas).forEach(varita ->
-                varitas.add(new VaritaDTO(
-                        varita.getMadera(), varita.getNucleo(), varita.getLongitud(),
-                        varita.isRota(),
-                        varita.getPersonaje() == null ? null : varita.getPersonaje().getId(),
-                        varita.getPersonaje() == null ? null : varita.getPersonaje().getNombre()
-                )));
+        List<VaritaDTO> varitas = varitaService.findByRota(rotas).stream()
+                .map(this::createVaritaDTO)
+                .toList();
         return ResponseEntity.ok(varitas);
     }
 
     @GetMapping("/nucleo/{nucleo}")
     public ResponseEntity<List<VaritaDTO>> getVaritasByNucleo(@PathVariable String nucleo) {
-        List<VaritaDTO> varitas = new ArrayList<>();
-        varitaService.findByNucleoContainingIgnoreCase(nucleo).forEach(varita ->
-                varitas.add(new VaritaDTO(
-                        varita.getMadera(), varita.getNucleo(), varita.getLongitud(),
-                        varita.isRota(),
-                        varita.getPersonaje() == null ? null : varita.getPersonaje().getId(),
-                        varita.getPersonaje() == null ? null : varita.getPersonaje().getNombre()
-                ))
-        );
+        List<VaritaDTO> varitas = varitaService.findByNucleoContainingIgnoreCase(nucleo).stream()
+                .map(this::createVaritaDTO)
+                .toList();
         return ResponseEntity.ok(varitas);
     }
 
     @GetMapping("/resumen")
     public ResponseEntity<List<VaritaResumenDTO>> getResumenVaritas() {
-        List<VaritaResumenDTO> varitas = new ArrayList<>();
-        varitaService.findAll().forEach(varita ->
-                varitas.add(new VaritaResumenDTO(
-                        varita.getId(), String.format("%s. %s", varita.getMadera(), varita.getNucleo()),
-                        varita.getLongitud(), varita.isRota(),
-                        varita.getPersonaje() == null ? null : varita.getPersonaje().getNombre()
-                )));
+        List<VaritaResumenDTO> varitas = varitaService.findAll().stream()
+                .map(this::createVaritaResumenDTO)
+                .toList();
         return ResponseEntity.ok(varitas);
     }
 
@@ -86,47 +67,57 @@ public class VaritaController {
         if(varita != null) {
             varita.setRota(true);
             varitaService.save(varita);
-            Personaje personaje = varita.getPersonaje();
-            VaritaResumenDTO varitaDTO = new VaritaResumenDTO(
-                    varita.getId(), String.format("%s. %s", varita.getMadera(), varita.getNucleo()),
-                    varita.getLongitud(), varita.isRota(), personaje == null ? null : personaje.getNombre()
-            );
-            return ResponseEntity.ok(varitaDTO);
+            return ResponseEntity.ok(createVaritaResumenDTO(varita));
         }
         else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Varita con id %d no encontrada", id));
     }
 
     @PostMapping
-    public ResponseEntity<?> postVaritaMadera(@Valid @RequestBody CrearVaritaDTO varita) {
+    public ResponseEntity<CrearVaritaDTO> postVaritaMadera(@Valid @RequestBody CrearVaritaDTO varita) {
         Varita newVarita = new Varita(varita.getLongitud(), varita.getMadera(), varita.getNucleo(),
                 false, null);
         if(varitaService.findById(newVarita.getId()) == null) {
             varitaService.save(newVarita);
             Varita insertedVarita = varitaService.findById(newVarita.getId());
             if (insertedVarita != null) {
-                Personaje insertedPersonaje = insertedVarita.getPersonaje();
-                VaritaResumenDTO varitaDTO = new VaritaResumenDTO(
-                        insertedVarita.getId(), String.format("%s. %s", insertedVarita.getMadera(), insertedVarita.getNucleo()),
-                        insertedVarita.getLongitud(), insertedVarita.isRota(),
-                        insertedPersonaje == null ? null : insertedPersonaje.getNombre()
-                );
-                return ResponseEntity.status(HttpStatus.CREATED).body(varitaDTO);
+                return ResponseEntity.status(HttpStatus.CREATED).body(varita);
             } else throw new VaritaNotCreatedUpdatedException();
         } else throw new VaritaAlreadyExistException();
     }
 
     @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<?> deleteVarita(@PathVariable int id) {
+    public ResponseEntity<VaritaResumenDTO> deleteVarita(@PathVariable int id) {
         Varita varita = varitaService.findById(id);
         if(varita != null) {
             varitaService.delete(varita);
-            Personaje personaje = varita.getPersonaje();
-            VaritaResumenDTO deleted = new VaritaResumenDTO(
-                    varita.getId(), String.format("%s. %s", varita.getMadera(), varita.getNucleo()),
-                    varita.getLongitud(), varita.isRota(),
-                    personaje == null ? null : personaje.getNombre()
-            );
-            return  ResponseEntity.status(HttpStatus.OK).body(varita);
+            return ResponseEntity.status(HttpStatus.OK).body(createVaritaResumenDTO(varita));
         } else throw new VaritaNotFoundException(id);
+    }
+
+    @GetMapping("/ordenadas")
+    public ResponseEntity<List<VaritaDTO>> getOrdenadas(
+        @RequestParam(required = false, defaultValue = "false") boolean descendente,
+        @RequestParam(required = false, defaultValue = "false") boolean solamenteUsadas
+    ) {
+        List<VaritaDTO> varitas = varitaService.findWithFilter(descendente, solamenteUsadas).stream()
+                .map(this::createVaritaDTO)
+                .toList();
+        return varitas.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(varitas);
+    }
+
+    private VaritaDTO createVaritaDTO(Varita varita) {
+        Personaje personaje = varita.getPersonaje();
+        return new VaritaDTO(varita.getMadera(), varita.getNucleo(), varita.getLongitud(),
+                varita.isRota(), personaje == null ? null : personaje.getId(),
+                personaje == null ? null : personaje.getNombre());
+    }
+
+    private VaritaResumenDTO createVaritaResumenDTO(Varita varita) {
+        Personaje personaje = varita.getPersonaje();
+        return new VaritaResumenDTO(
+                varita.getId(), String.format("%s. %s", varita.getMadera(), varita.getNucleo()),
+                varita.getLongitud(), varita.isRota(),
+                personaje == null ? null : personaje.getNombre()
+        );
     }
 }

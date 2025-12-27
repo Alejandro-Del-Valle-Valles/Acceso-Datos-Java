@@ -41,13 +41,10 @@ public class PersonajeController {
 
     @GetMapping
     public ResponseEntity<List<PersonajeDTO>> findAll() {
-        List<PersonajeDTO> personajeDTOS = new ArrayList<>();
-        personajeService.findAll().forEach(personaje -> {
-            personajeDTOS.add(
-                    createPersonajeDTO(personaje)
-            );
-        });
-        return ResponseEntity.ok().body(personajeDTOS);
+        List<PersonajeDTO> personajes = personajeService.findAll().stream()
+                .map(this::createPersonajeDTO)
+                .toList();
+        return ResponseEntity.ok().body(personajes);
     }
 
     @PostMapping("/crear")
@@ -58,34 +55,25 @@ public class PersonajeController {
                 casa, new ArrayList<Varita>(), new ArrayList<Hechizo>());
         if(personajeService.findById(newPersonaje.getId()) != null) {
             personajeService.save(newPersonaje);
-            PersonajeDTO personajeDTO = new PersonajeDTO(
-                    newPersonaje.getId(), newPersonaje.getNombre(), newPersonaje.getFechaNacimiento(),
-                    newPersonaje.getSangre(), newPersonaje.getCasa().getNombre()
-            );
+            PersonajeDTO personajeDTO = createPersonajeDTO(newPersonaje);
             return ResponseEntity.status(HttpStatus.CREATED).body(personajeDTO);
         } else throw new PersonajeNotCreatedUpdatedException();
     }
 
     @GetMapping("/nombre/{palabra}")
     public ResponseEntity<List<PersonajeDTO>> containsInName(@PathVariable String palabra) {
-        List<PersonajeDTO> personajeDTOS = new ArrayList<>();
-        personajeService.findByNombreContainingIgnoreCase(palabra).forEach(personaje -> {
-            personajeDTOS.add(
-                    createPersonajeDTO(personaje)
-            );
-        });
-        return ResponseEntity.ok().body(personajeDTOS);
+        List<PersonajeDTO> personajes = personajeService.findByNombreContainingIgnoreCase(palabra).stream()
+                .map(this::createPersonajeDTO)
+                .toList();
+        return ResponseEntity.ok().body(personajes);
     }
 
     @GetMapping("/casa/{nombreCasa}")
     public ResponseEntity<List<PersonajeDTO>> areFromHouse(@PathVariable String nombreCasa) {
-        List<PersonajeDTO> personajeDTOS = new ArrayList<>();
-        personajeService.findByCasaNombre(nombreCasa).forEach(personaje -> {
-            personajeDTOS.add(
-                    createPersonajeDTO(personaje)
-            );
-        });
-        return ResponseEntity.ok().body(personajeDTOS);
+        List<PersonajeDTO> personajes = personajeService.findByCasaNombre(nombreCasa).stream()
+                .map(this::createPersonajeDTO)
+                .toList();
+        return ResponseEntity.ok().body(personajes);
     }
 
     @GetMapping("/{id}")
@@ -127,7 +115,7 @@ public class PersonajeController {
                 varitaDTO.getNucleo(), false, newPersonaje);
         newPersonaje.addVarita(nuevaVarita);
         personajeService.save(newPersonaje);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createPersonajeDTO(newPersonaje));
+        return ResponseEntity.status(HttpStatus.CREATED).body(personaje);
     }
 
     private PersonajeDTO createPersonajeDTO(Personaje personaje) {

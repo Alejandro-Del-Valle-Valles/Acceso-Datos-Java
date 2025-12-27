@@ -6,6 +6,9 @@ import DelValle.Valles.Alejandro.OrmHarryPotter.interfaces.HechizoService;
 import DelValle.Valles.Alejandro.OrmHarryPotter.model.Hechizo;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +19,6 @@ import java.util.List;
 @RequestMapping("/hechizo")
 public class HechizoController {
 
-    //TODO: Testear este controller. También testear las nuevas excepciones y su manejo.
-    // También los nuevos endpoints de PersonajeController
     private final HechizoService hechizoService;
 
     @Autowired
@@ -48,6 +49,17 @@ public class HechizoController {
             hechizosDTO.add(createHechizoDTO(newHechizo));
         });
         return ResponseEntity.ok(hechizosDTO);
+    }
+
+    @GetMapping("/paginacion")
+    public ResponseEntity<Page<HechizoDTO>> getHechizosWithPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) String order
+    ) {
+        Pageable pages = PageRequest.of(page, 5);
+        Page<Hechizo> hechizoPage = hechizoService.findAll(pages, order);
+        Page<HechizoDTO> hechizos = hechizoPage.map(this::createHechizoDTO);
+        return ResponseEntity.ok(hechizos);
     }
 
     private HechizoDTO createHechizoDTO(Hechizo hechizo) {

@@ -14,4 +14,9 @@ public interface VaritaRepository extends JpaRepository<Varita, Long> {
     public Varita findById(int id);
     public List<Varita> findByRota(boolean rota);
     public List<Varita> findByNucleoContainingIgnoreCase(String nucleo);
+    public List<Varita> findAllByOrderByLongitudDesc();
+    public List<Varita> findAllByOrderByLongitudAsc();
+    public List<Varita> findByPersonajeNotNull();
+    public List<Varita> findByPersonajeNotNullOrderByLongitudDesc();
+    public List<Varita> findByPersonajeNotNullOrderByLongitudAsc();
 }

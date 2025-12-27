@@ -75,4 +75,73 @@ public class VaritaServiceImpl implements VaritaService {
     public List<Varita> findByNucleoContainingIgnoreCase(String nucleo) {
         return varitaRepository.findByNucleoContainingIgnoreCase(nucleo);
     }
+
+    /**
+     * Return a list of Varitas ordered form largest to sortest Longitud
+     *
+     * @return List<Varita>
+     */
+    @Override
+    public List<Varita> findAllByOrderByLongitudDesc() {
+        return varitaRepository.findAllByOrderByLongitudDesc();
+    }
+
+    /**
+     * Return a list of Varitas ordered form sortest to largest Longitud
+     *
+     * @return List<Varita>
+     */
+    @Override
+    public List<Varita> findAllByOrderByLongitudAsc() {
+        return varitaRepository.findAllByOrderByLongitudAsc();
+    }
+
+    /**
+     * Return a list of Varitas that are assigned to a Personaje
+     *
+     * @return List<Varita>
+     */
+    @Override
+    public List<Varita> findByPersonajeNotNull() {
+        return varitaRepository.findByPersonajeNotNull();
+    }
+
+    /**
+     * Return a list of Varitas ordered Desc and they are attached to a Personaje.
+     *
+     * @return List<Varita>
+     */
+    @Override
+    public List<Varita> findByPersonajeNotNullOrderByLongitudDesc() {
+        return varitaRepository.findByPersonajeNotNullOrderByLongitudDesc();
+    }
+
+    /**
+     * Return a list of Varitas ordered Asc and they are attached to a Personaje.
+     *
+     * @return List<Varita>
+     */
+    @Override
+    public List<Varita> findByPersonajeNotNullOrderByLongitudAsc() {
+        return varitaRepository.findByPersonajeNotNullOrderByLongitudAsc();
+    }
+
+    /**
+     * Return a list of Varitas ordered Asc or Desc and if they are attached to a Personaje or not.
+     *
+     * @param desc             True to order from largest to sortest longitud, false otherwise.
+     * @param personajeNotNull True to filter only if Personaje is not null, false otherwise.
+     * @return List<Varita>
+     */
+    @Override
+    public List<Varita> findWithFilter(boolean desc, boolean personajeNotNull) {
+        List<Varita> varitas = null;
+        if(personajeNotNull) varitas = desc
+                ? findByPersonajeNotNullOrderByLongitudDesc()
+                : findByPersonajeNotNullOrderByLongitudAsc();
+        else varitas = desc
+                ? findAllByOrderByLongitudDesc()
+                : findAllByOrderByLongitudAsc();
+        return varitas;
+    }
 }

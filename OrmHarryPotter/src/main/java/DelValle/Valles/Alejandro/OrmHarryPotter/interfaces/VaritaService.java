@@ -52,4 +52,42 @@ public interface VaritaService {
      * @return List<Varita>
      */
     public  List<Varita> findByNucleoContainingIgnoreCase(String nucleo);
+
+    /**
+     * Return a list of Varitas ordered form largest to sortest Longitud
+     * @return List<Varita>
+     */
+    public List<Varita> findAllByOrderByLongitudDesc();
+
+    /**
+     * Return a list of Varitas ordered form sortest to largest Longitud
+     * @return List<Varita>
+     */
+    public List<Varita> findAllByOrderByLongitudAsc();
+
+    /**
+     * Return a list of Varitas that are assigned to a Personaje
+     * @return List<Varita>
+     */
+    public List<Varita> findByPersonajeNotNull();
+
+    /**
+     * Return a list of Varitas ordered Desc and they are attached to a Personaje.
+     * @return List<Varita>
+     */
+    public List<Varita> findByPersonajeNotNullOrderByLongitudDesc();
+
+    /**
+     * Return a list of Varitas ordered Asc and they are attached to a Personaje.
+     * @return List<Varita>
+     */
+    public List<Varita> findByPersonajeNotNullOrderByLongitudAsc();
+
+    /**
+     * Return a list of Varitas ordered Asc or Desc and if they are attached to a Personaje or not.
+     * @param desc True to order from largest to sortest longitud, false otherwise.
+     * @param personajeNotNull  True to filter only if Personaje is not null, false otherwise.
+     * @return List<Varita>
+     */
+    public List<Varita> findWithFilter(boolean desc, boolean personajeNotNull);
 }

@@ -1,12 +1,15 @@
 package DelValle.Valles.Alejandro.OrmHarryPotter.interfaces;
 
 import DelValle.Valles.Alejandro.OrmHarryPotter.model.Hechizo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface HechizoService {
 
     public List<Hechizo> findAll();
+    public Page<Hechizo> findAll(Pageable pageable, String order);
     public Hechizo findById(long id);
     public List<Hechizo> findByNombre(String nombre);
     public List<Hechizo> findByNombreContainingIgnoreCase(String nombre);

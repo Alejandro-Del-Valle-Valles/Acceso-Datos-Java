@@ -4,9 +4,15 @@ import DelValle.Valles.Alejandro.OrmHarryPotter.interfaces.HechizoService;
 import DelValle.Valles.Alejandro.OrmHarryPotter.model.Hechizo;
 import DelValle.Valles.Alejandro.OrmHarryPotter.repository.HechizoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class HechizoServiceImpl implements HechizoService {
 
     private final HechizoRepository hechizoRepository;
@@ -19,6 +25,24 @@ public class HechizoServiceImpl implements HechizoService {
     @Override
     public List<Hechizo> findAll() {
         return hechizoRepository.findAll();
+    }
+
+    @Override
+    public Page<Hechizo> findAll(Pageable pageable, String order) {
+        Sort sort = Sort.unsorted();
+        if(order != null) {
+            if(order.equals("asc")) {
+                sort = Sort.by(Sort.Direction.ASC, "nombre");
+            } else if (order.equals("desc")) {
+                sort = Sort.by(Sort.Direction.DESC, "nombre");
+            }
+        }
+        Pageable forcedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                5,
+                sort
+        );
+        return hechizoRepository.findAll(forcedPageable);
     }
 
     @Override
