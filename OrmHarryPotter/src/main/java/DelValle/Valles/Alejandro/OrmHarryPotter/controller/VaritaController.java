@@ -2,6 +2,7 @@ package DelValle.Valles.Alejandro.OrmHarryPotter.controller;
 
 import DelValle.Valles.Alejandro.OrmHarryPotter.dto.CrearVaritaDTO;
 import DelValle.Valles.Alejandro.OrmHarryPotter.dto.VaritaDTO;
+import DelValle.Valles.Alejandro.OrmHarryPotter.dto.VaritaMovilesDTO;
 import DelValle.Valles.Alejandro.OrmHarryPotter.dto.VaritaResumenDTO;
 import DelValle.Valles.Alejandro.OrmHarryPotter.exceptions.VaritaAlreadyExistException;
 import DelValle.Valles.Alejandro.OrmHarryPotter.exceptions.VaritaNotCreatedUpdatedException;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/varita")
+@CrossOrigin(origins = "*")
 public class VaritaController {
 
     private final VaritaService varitaService;
@@ -33,6 +35,14 @@ public class VaritaController {
     public ResponseEntity<List<VaritaDTO>> getAllVaritas() {
         List<VaritaDTO> varitas = varitaService.findAll().stream()
                 .map(this::createVaritaDTO)
+                .toList();
+        return ResponseEntity.ok(varitas);
+    }
+
+    @GetMapping("/moviles")
+    public ResponseEntity<List<VaritaMovilesDTO>> getAllVaritasMoviles() {
+        List<VaritaMovilesDTO> varitas = varitaService.findAll().stream()
+                .map(this::createVaritaMovilesDTO)
                 .toList();
         return ResponseEntity.ok(varitas);
     }
@@ -112,6 +122,13 @@ public class VaritaController {
                 personaje == null ? null : personaje.getNombre());
     }
 
+    private VaritaMovilesDTO createVaritaMovilesDTO(Varita varita) {
+        Personaje personaje = varita.getPersonaje();
+        return new VaritaMovilesDTO(varita.getId(), varita.getMadera(), varita.getNucleo(), varita.getLongitud(),
+                varita.isRota(), personaje == null ? null : personaje.getId(),
+                personaje == null ? null : personaje.getNombre());
+    }
+
     private VaritaResumenDTO createVaritaResumenDTO(Varita varita) {
         Personaje personaje = varita.getPersonaje();
         return new VaritaResumenDTO(
@@ -120,4 +137,6 @@ public class VaritaController {
                 personaje == null ? null : personaje.getNombre()
         );
     }
+
+
 }
