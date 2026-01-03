@@ -86,13 +86,11 @@ public class VaritaController {
     public ResponseEntity<CrearVaritaDTO> postVaritaMadera(@Valid @RequestBody CrearVaritaDTO varita) {
         Varita newVarita = new Varita(varita.getLongitud(), varita.getMadera(), varita.getNucleo(),
                 false, null);
-        if(varitaService.findById(newVarita.getId()) == null) {
-            varitaService.save(newVarita);
-            Varita insertedVarita = varitaService.findById(newVarita.getId());
-            if (insertedVarita != null) {
-                return ResponseEntity.status(HttpStatus.CREATED).body(varita);
-            } else throw new VaritaNotCreatedUpdatedException();
-        } else throw new VaritaAlreadyExistException();
+        varitaService.save(newVarita);
+        Varita insertedVarita = varitaService.findById(newVarita.getId());
+        if (insertedVarita != null) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(varita);
+        } else throw new VaritaNotCreatedUpdatedException();
     }
 
     @DeleteMapping("/eliminar/{id}")
