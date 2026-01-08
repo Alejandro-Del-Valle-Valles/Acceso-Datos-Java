@@ -1,6 +1,7 @@
 package DelValle.Valles.Alejandro.OrmHarryPotter.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -24,9 +25,9 @@ public class Varita {
     @Column(nullable = false)
     private boolean rota;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "personaje_id", nullable = true)
-    private Personaje personaje;
+    private @Valid Personaje personaje;
 
     public Varita() {
     }

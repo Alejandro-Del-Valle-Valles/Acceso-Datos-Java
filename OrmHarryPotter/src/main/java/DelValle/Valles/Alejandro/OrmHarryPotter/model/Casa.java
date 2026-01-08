@@ -1,6 +1,7 @@
 package DelValle.Valles.Alejandro.OrmHarryPotter.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +24,7 @@ public class Casa {
     private String nombre;
 
     @OneToMany(mappedBy = "casa")
-    private List<Personaje> personajes;
+    private List<@Valid Personaje> personajes;
 
     public Casa() {
     }

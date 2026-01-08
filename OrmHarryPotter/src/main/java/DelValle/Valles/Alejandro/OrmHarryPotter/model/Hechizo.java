@@ -1,6 +1,7 @@
 package DelValle.Valles.Alejandro.OrmHarryPotter.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +23,7 @@ public class Hechizo {
     private String tipo;
 
     @ManyToMany(mappedBy = "hechizos")
-    private List<Personaje> personajes;
+    private List<@Valid Personaje> personajes;
 
     public Hechizo() {
     }
