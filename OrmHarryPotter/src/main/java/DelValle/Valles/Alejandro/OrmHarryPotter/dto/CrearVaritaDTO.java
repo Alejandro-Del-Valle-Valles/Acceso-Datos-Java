@@ -1,22 +1,25 @@
 package DelValle.Valles.Alejandro.OrmHarryPotter.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.hibernate.validator.constraints.Length;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
 public class CrearVaritaDTO {
 
     @NotBlank
-    @Length(min = 5)
+    @Size(min = 5, max = 150, message = "La informacion de la madera debe estar entre 5 y 150.")
+    @NotNull
     private String madera;
 
     @NotBlank
-    @Length(min = 5)
+    @Size(min = 5, max = 150, message = "La información del nucleo debe estar entre 5 y 150.")
+    @NotNull
     private String nucleo;
 
-    @Positive
+    @Positive(message = "La longitud de la varita debe ser positiva")
     private BigDecimal longitud;
 
     public CrearVaritaDTO() {

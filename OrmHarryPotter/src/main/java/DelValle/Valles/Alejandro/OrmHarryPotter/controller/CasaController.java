@@ -1,5 +1,6 @@
 package DelValle.Valles.Alejandro.OrmHarryPotter.controller;
 
+import DelValle.Valles.Alejandro.OrmHarryPotter.adpater.CasaAdapter;
 import DelValle.Valles.Alejandro.OrmHarryPotter.dto.CasaDTO;
 import DelValle.Valles.Alejandro.OrmHarryPotter.exceptions.CasaNotFoundException;
 import DelValle.Valles.Alejandro.OrmHarryPotter.exceptions.IdNotValidException;
@@ -30,7 +31,7 @@ public class CasaController {
     @GetMapping
     public ResponseEntity<List<CasaDTO>> getCasas(){
         List<CasaDTO> casas = casaService.findAll().stream()
-                .map(this::createCasaDTO)
+                .map(CasaAdapter::toDTO)
                 .toList();
         return ResponseEntity.ok(casas);
     }
@@ -40,19 +41,8 @@ public class CasaController {
         if(id != null && id > 0) {
             Casa casa = casaService.findById(id);
             if(casa != null) {
-                return ResponseEntity.ok(this.createCasaDTO(casa));
+                return ResponseEntity.ok(CasaAdapter.toDTO(casa));
             } else throw new CasaNotFoundException();
         } else throw new IdNotValidException(id);
-    }
-
-    private CasaDTO createCasaDTO(Casa casa){
-        String fullImageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/img/escudos/")
-                .path(casa.getEscudo_imagen())
-                .toUriString();
-        List<String> personajes = casa.getPersonajes().stream()
-                .map(Personaje::getNombre)
-                .toList();
-        return new CasaDTO(casa.getNombre(), casa.getFundador(), fullImageUrl, personajes);
     }
 }

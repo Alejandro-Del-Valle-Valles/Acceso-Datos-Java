@@ -1,5 +1,6 @@
 package DelValle.Valles.Alejandro.OrmHarryPotter.dto;
 
+import DelValle.Valles.Alejandro.OrmHarryPotter.enums.TipoSangre;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -20,15 +21,15 @@ public class PersonajeDTO {
     @PastOrPresent
     private LocalDate fechaNacimiento;
 
-    @NotBlank
-    private String sangre;
+    @NotNull
+    private TipoSangre sangre;
 
     @NotBlank
     private String nombreCasa;
 
     public PersonajeDTO() {}
 
-    public PersonajeDTO(Integer id, String nombre, LocalDate fechaNacimiento, String sangre, String nombreCasa) {
+    public PersonajeDTO(Integer id, String nombre, LocalDate fechaNacimiento, TipoSangre sangre, String nombreCasa) {
         this.id = id;
         this.nombre = nombre;
         this.fechaNacimiento = fechaNacimiento;
@@ -60,11 +61,11 @@ public class PersonajeDTO {
         this.fechaNacimiento = fechaNacimiento;
     }
 
-    public String getSangre() {
+    public TipoSangre getSangre() {
         return sangre;
     }
 
-    public void setSangre(String sangre) {
+    public void setSangre(TipoSangre sangre) {
         this.sangre = sangre;
     }
 

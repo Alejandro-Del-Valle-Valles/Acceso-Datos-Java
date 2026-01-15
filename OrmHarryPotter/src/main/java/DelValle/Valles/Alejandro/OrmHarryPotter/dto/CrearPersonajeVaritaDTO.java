@@ -1,6 +1,7 @@
 package DelValle.Valles.Alejandro.OrmHarryPotter.dto;
 
 import DelValle.Valles.Alejandro.OrmHarryPotter.enums.TipoSangre;
+import jakarta.validation.Valid;
 
 import java.time.LocalDate;
 

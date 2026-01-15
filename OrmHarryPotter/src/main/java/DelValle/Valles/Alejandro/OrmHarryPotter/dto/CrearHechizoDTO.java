@@ -7,9 +7,11 @@ import jakarta.validation.constraints.NotNull;
 public class CrearHechizoDTO {
 
     @NotBlank
+    @NotNull
     private String nombre;
 
     @NotBlank
+    @NotNull
     private String descripcion;
 
     @NotNull

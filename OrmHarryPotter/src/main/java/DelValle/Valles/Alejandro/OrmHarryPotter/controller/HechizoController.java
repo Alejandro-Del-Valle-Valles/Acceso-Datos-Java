@@ -1,5 +1,6 @@
 package DelValle.Valles.Alejandro.OrmHarryPotter.controller;
 
+import DelValle.Valles.Alejandro.OrmHarryPotter.adpater.HechizoAdapter;
 import DelValle.Valles.Alejandro.OrmHarryPotter.dto.CrearHechizoDTO;
 import DelValle.Valles.Alejandro.OrmHarryPotter.dto.HechizoDTO;
 import DelValle.Valles.Alejandro.OrmHarryPotter.interfaces.HechizoService;
@@ -36,7 +37,7 @@ public class HechizoController {
         Hechizo newHechizo = new Hechizo(hechizo.getDescripcion(), hechizo.getNombre(),
                 hechizo.getTipo().toString(), new ArrayList<>());
         hechizoService.save(newHechizo);
-        return ResponseEntity.ok(createHechizoDTO(newHechizo));
+        return ResponseEntity.ok(HechizoAdapter.toDTO(newHechizo));
     }
 
     @PostMapping("/crear-varios")
@@ -46,7 +47,7 @@ public class HechizoController {
             Hechizo newHechizo = new Hechizo(hechizo.getDescripcion(), hechizo.getNombre(),
                     hechizo.getTipo().toString(), new ArrayList<>());
             hechizoService.save(newHechizo);
-            hechizosDTO.add(createHechizoDTO(newHechizo));
+            hechizosDTO.add(HechizoAdapter.toDTO(newHechizo));
         });
         return ResponseEntity.ok(hechizosDTO);
     }
@@ -58,11 +59,7 @@ public class HechizoController {
     ) {
         Pageable pages = PageRequest.of(page, 5);
         Page<Hechizo> hechizoPage = hechizoService.findAll(pages, order);
-        Page<HechizoDTO> hechizos = hechizoPage.map(this::createHechizoDTO);
+        Page<HechizoDTO> hechizos = hechizoPage.map(HechizoAdapter::toDTO);
         return ResponseEntity.ok(hechizos);
-    }
-
-    private HechizoDTO createHechizoDTO(Hechizo hechizo) {
-        return new HechizoDTO(hechizo.getNombre(), hechizo.getDescripcion(), hechizo.getTipo());
     }
 }

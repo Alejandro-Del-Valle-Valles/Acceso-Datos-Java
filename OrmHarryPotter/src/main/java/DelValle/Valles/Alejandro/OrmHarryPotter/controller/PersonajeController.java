@@ -1,5 +1,6 @@
 package DelValle.Valles.Alejandro.OrmHarryPotter.controller;
 
+import DelValle.Valles.Alejandro.OrmHarryPotter.adpater.PersonajeAdapter;
 import DelValle.Valles.Alejandro.OrmHarryPotter.dto.CrearPersonajeVaritaDTO;
 import DelValle.Valles.Alejandro.OrmHarryPotter.dto.CrearVaritaDTO;
 import DelValle.Valles.Alejandro.OrmHarryPotter.dto.PersonajeDTO;
@@ -42,7 +43,7 @@ public class PersonajeController {
     @GetMapping
     public ResponseEntity<List<PersonajeDTO>> findAll() {
         List<PersonajeDTO> personajes = personajeService.findAll().stream()
-                .map(this::createPersonajeDTO)
+                .map(PersonajeAdapter::toDTO)
                 .toList();
         return ResponseEntity.ok().body(personajes);
     }
@@ -51,11 +52,11 @@ public class PersonajeController {
     public ResponseEntity<?> create(@Valid @RequestBody CrearPersonajeDTO personaje) {
         Casa casa = casaService.findByName(personaje.getNombreCasa());
         Personaje newPersonaje = new Personaje(
-                personaje.getFechaNacimiento(), personaje.getNombre(), personaje.getSangre().toString(),
-                casa, new ArrayList<Varita>(), new ArrayList<Hechizo>());
+                personaje.getFechaNacimiento(), personaje.getNombre(), personaje.getSangre(),
+                casa, null, new ArrayList<Hechizo>());
         if(personajeService.findById(newPersonaje.getId()) != null) {
             personajeService.save(newPersonaje);
-            PersonajeDTO personajeDTO = createPersonajeDTO(newPersonaje);
+            PersonajeDTO personajeDTO = PersonajeAdapter.toDTO(newPersonaje);
             return ResponseEntity.status(HttpStatus.CREATED).body(personajeDTO);
         } else throw new PersonajeNotCreatedUpdatedException();
     }
@@ -63,7 +64,7 @@ public class PersonajeController {
     @GetMapping("/nombre/{palabra}")
     public ResponseEntity<List<PersonajeDTO>> containsInName(@PathVariable String palabra) {
         List<PersonajeDTO> personajes = personajeService.findByNombreContainingIgnoreCase(palabra).stream()
-                .map(this::createPersonajeDTO)
+                .map(PersonajeAdapter::toDTO)
                 .toList();
         return ResponseEntity.ok().body(personajes);
     }
@@ -71,7 +72,7 @@ public class PersonajeController {
     @GetMapping("/casa/{nombreCasa}")
     public ResponseEntity<List<PersonajeDTO>> areFromHouse(@PathVariable String nombreCasa) {
         List<PersonajeDTO> personajes = personajeService.findByCasaNombre(nombreCasa).stream()
-                .map(this::createPersonajeDTO)
+                .map(PersonajeAdapter::toDTO)
                 .toList();
         return ResponseEntity.ok().body(personajes);
     }
@@ -80,7 +81,7 @@ public class PersonajeController {
     public ResponseEntity<?> findById(@PathVariable Integer id) {
         Personaje personaje = personajeService.findById(id);
         if(personaje != null) {
-            return ResponseEntity.ok().body(createPersonajeDTO(personaje));
+            return ResponseEntity.ok().body(PersonajeAdapter.toDTO(personaje));
         } else throw new PersonajeNotFoundException(id);
     }
 
@@ -93,33 +94,24 @@ public class PersonajeController {
         if (nuevaVarita == null) throw new VaritaNotFoundException(idVarita);
         if (nuevaVarita.isRota()) return ResponseEntity.status(HttpStatus.CONFLICT).body("La varita está rota.");
 
-        if (personaje.getVaritas() != null) {
-            for (Varita v : personaje.getVaritas()) {
-                v.setPersonaje(null);
-            }
-            personaje.getVaritas().clear();
+        if (personaje.getVarita() != null) {
+            personaje.addVarita(nuevaVarita);
         }
-        personaje.addVarita(nuevaVarita);
         personajeService.save(personaje);
-        return ResponseEntity.ok(createPersonajeDTO(personaje));
+        return ResponseEntity.ok(PersonajeAdapter.toDTO(personaje));
     }
 
     @PostMapping("/crear-con-varita")
-    public ResponseEntity<?> createPersonajeWithVarita(@Valid @RequestBody CrearPersonajeVaritaDTO personaje) {
+    public ResponseEntity<CrearPersonajeVaritaDTO> createPersonajeWithVarita(@Valid @RequestBody CrearPersonajeVaritaDTO personaje) {
         CrearVaritaDTO varitaDTO = personaje.getCrearVaritaDTO();
         Casa casa = casaService.findByName(personaje.getNombreCasa());
         if(casa == null) throw new CasaNotFoundException(personaje.getNombreCasa());
         Personaje newPersonaje = new Personaje(personaje.getFechaNacimiento(), personaje.getNombre(),
-                personaje.getSangre().toString(), casa, new ArrayList<>(), new ArrayList<>());
+                personaje.getSangre(), casa, null, new ArrayList<>());
         Varita nuevaVarita = new Varita(varitaDTO.getLongitud(), varitaDTO.getMadera(),
                 varitaDTO.getNucleo(), false, newPersonaje);
         newPersonaje.addVarita(nuevaVarita);
         personajeService.save(newPersonaje);
         return ResponseEntity.status(HttpStatus.CREATED).body(personaje);
-    }
-
-    private PersonajeDTO createPersonajeDTO(Personaje personaje) {
-        return new PersonajeDTO(personaje.getId(), personaje.getNombre(), personaje.getFechaNacimiento(),
-                personaje.getSangre(), personaje.getCasa().getNombre());
     }
 }

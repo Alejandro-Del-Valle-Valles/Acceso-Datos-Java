@@ -1,24 +1,26 @@
 package DelValle.Valles.Alejandro.OrmHarryPotter.dto;
 
 import DelValle.Valles.Alejandro.OrmHarryPotter.enums.TipoSangre;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
 public class CrearPersonajeDTO {
 
     @NotBlank
+    @Size(min = 5, max = 50, message = "El nombre debe tener entre 5 y 50 caracteres.")
+    @NotNull
     private String nombre;
 
     @NotNull
-    @PastOrPresent
+    @Past
     private LocalDate fechaNacimiento;
 
+    @NotNull
     private TipoSangre sangre;
 
     @NotBlank
+    @NotNull
     private String nombreCasa;
 
     public CrearPersonajeDTO() {}

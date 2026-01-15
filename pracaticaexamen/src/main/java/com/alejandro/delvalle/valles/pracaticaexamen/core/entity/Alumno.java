@@ -22,7 +22,7 @@ public class Alumno  {
 
     @NotNull(message = "El alumno tiene que tener fecha de nacimiento.")
     @PastOrPresent(message = "La fecha de nacimiento no puede ser posterior a hoy.")
-    private LocalDate fecha_nacimiento;
+    private LocalDate fechaNacimiento;
 
     @OneToOne(mappedBy = "alumno", cascade = CascadeType.ALL)
     private @Valid Carnet carnet;
@@ -44,7 +44,7 @@ public class Alumno  {
 
     public Alumno(String nombre, LocalDate fecha_nacimiento, Carnet carnet, Instituto instituto, Set<@Valid Asignatura> asignaturas) {
         this.nombre = nombre;
-        this.fecha_nacimiento = fecha_nacimiento;
+        this.fechaNacimiento = fecha_nacimiento;
         this.carnet = carnet;
         this.instituto = instituto;
         this.asignaturas = asignaturas;
@@ -72,11 +72,11 @@ public class Alumno  {
     }
 
     public LocalDate getFecha_nacimiento() {
-        return fecha_nacimiento;
+        return fechaNacimiento;
     }
 
     public void setFecha_nacimiento(LocalDate fecha_nacimiento) {
-        this.fecha_nacimiento = fecha_nacimiento;
+        this.fechaNacimiento = fecha_nacimiento;
     }
 
     public Carnet getCarnet() {

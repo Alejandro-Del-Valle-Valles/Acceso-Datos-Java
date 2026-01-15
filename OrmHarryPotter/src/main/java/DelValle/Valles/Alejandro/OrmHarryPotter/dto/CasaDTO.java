@@ -9,9 +9,11 @@ import java.util.List;
 public class CasaDTO {
 
     @NotBlank
+    @NotNull
     private String nombre;
 
     @NotBlank
+    @NotNull
     private String fundador;
 
     @NotBlank
