@@ -16,6 +16,7 @@ import DelValle.Valles.Alejandro.OrmHarryPotter.model.Casa;
 import DelValle.Valles.Alejandro.OrmHarryPotter.model.Hechizo;
 import DelValle.Valles.Alejandro.OrmHarryPotter.model.Personaje;
 import DelValle.Valles.Alejandro.OrmHarryPotter.model.Varita;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -102,6 +103,7 @@ public class PersonajeController {
     }
 
     @PostMapping("/crear-con-varita")
+    @Transactional
     public ResponseEntity<CrearPersonajeVaritaDTO> createPersonajeWithVarita(@Valid @RequestBody CrearPersonajeVaritaDTO personaje) {
         CrearVaritaDTO varitaDTO = personaje.getCrearVaritaDTO();
         Casa casa = casaService.findByName(personaje.getNombreCasa());

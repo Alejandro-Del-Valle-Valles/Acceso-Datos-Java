@@ -3,9 +3,11 @@ package com.alejandro.delvalle.valles.pracaticaexamen.core.entity;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 public class Instituto {
@@ -14,14 +16,18 @@ public class Instituto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
     @NotBlank(message = "El nombre del instituto no puede estar en blanco.")
+    @Size(min = 5, max = 50)
     private String nombre;
 
+    @NotNull
     @NotBlank(message = "La ubicación del instituo no puede estar en blanco.")
+    @Size(min = 5, max = 50)
     private String ubicacion;
 
     @OneToMany(mappedBy = "instituto", cascade = CascadeType.ALL)
-    private Set<@Valid Alumno> alumnos;
+    private List<@Valid Alumno> alumnos;
 
     public Instituto() {}
 
@@ -56,11 +62,11 @@ public class Instituto {
         this.ubicacion = ubicacion;
     }
 
-    public Set<Alumno> getAlumnos() {
+    public List<Alumno> getAlumnos() {
         return alumnos;
     }
 
-    public void setAlumnos(Set<Alumno> alumnos) {
+    public void setAlumnos(List<Alumno> alumnos) {
         this.alumnos = alumnos;
     }
 

@@ -5,8 +5,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -17,7 +19,9 @@ public class Alumno  {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
     @NotBlank(message = "El nombre no puede estar vacío.")
+    @Size(min = 2, max = 30)
     private String nombre;
 
     @NotNull(message = "El alumno tiene que tener fecha de nacimiento.")
@@ -38,19 +42,23 @@ public class Alumno  {
         joinColumns = @JoinColumn(name = "alumno_id"),
         inverseJoinColumns = @JoinColumn(name = "asignatura_id")
     )
-    private Set<@Valid Asignatura> asignaturas;
+    private List<@Valid Asignatura> asignaturas;
 
     public Alumno() {}
 
-    public Alumno(String nombre, LocalDate fecha_nacimiento, Carnet carnet, Instituto instituto, Set<@Valid Asignatura> asignaturas) {
+    public Alumno(String nombre, LocalDate fecha_nacimiento, Instituto instituto, List<@Valid Asignatura> asignaturas) {
         this.nombre = nombre;
         this.fechaNacimiento = fecha_nacimiento;
-        this.carnet = carnet;
         this.instituto = instituto;
         this.asignaturas = asignaturas;
     }
 
-    public Alumno(Integer id, String nombre, LocalDate fecha_nacimiento, Carnet carnet, Instituto instituto, Set<@Valid Asignatura> asignaturas) {
+    public Alumno(String nombre, LocalDate fecha_nacimiento, Carnet carnet, Instituto instituto, List<@Valid Asignatura> asignaturas) {
+        this(nombre, fecha_nacimiento, instituto, asignaturas);
+        this.carnet = carnet;
+    }
+
+    public Alumno(Integer id, String nombre, LocalDate fecha_nacimiento, Carnet carnet, Instituto instituto, List<@Valid Asignatura> asignaturas) {
         this(nombre, fecha_nacimiento, carnet, instituto, asignaturas);
         this.id = id;
     }
@@ -95,11 +103,11 @@ public class Alumno  {
         this.instituto = instituto;
     }
 
-    public Set<Asignatura> getAsignaturas() {
+    public List<Asignatura> getAsignaturas() {
         return asignaturas;
     }
 
-    public void setAsignaturas(Set<Asignatura> asignaturas) {
+    public void setAsignaturas(List<Asignatura> asignaturas) {
         this.asignaturas = asignaturas;
     }
 

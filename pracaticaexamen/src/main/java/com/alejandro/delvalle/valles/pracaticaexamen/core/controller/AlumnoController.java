@@ -1,14 +1,16 @@
 package com.alejandro.delvalle.valles.pracaticaexamen.core.controller;
 
-import com.alejandro.delvalle.valles.pracaticaexamen.adapter.AlumnoAdapter;
+import com.alejandro.delvalle.valles.pracaticaexamen.core.dto.alumno.AlumnoResumenDTO;
+import com.alejandro.delvalle.valles.pracaticaexamen.core.dto.alumno.CrearAlumnoCarnetDTO;
+import com.alejandro.delvalle.valles.pracaticaexamen.core.dto.alumno.CrearAlumnoDTO;
+import com.alejandro.delvalle.valles.pracaticaexamen.core.entity.Alumno;
 import com.alejandro.delvalle.valles.pracaticaexamen.core.service.interfaces.AlumnoService;
-import com.alejandro.delvalle.valles.pracaticaexamen.dto.AlumnoDTO;
+import com.alejandro.delvalle.valles.pracaticaexamen.core.dto.alumno.AlumnoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -24,10 +26,60 @@ public class AlumnoController {
 
     @GetMapping
     public ResponseEntity<List<AlumnoDTO>> getAlumnos() {
-        List<AlumnoDTO> alumnos = alumnoService.getAll()
-                .stream()
-                .map(AlumnoAdapter::toDTO)
-                .toList();
-        return ResponseEntity.ok(alumnos);
+        return ResponseEntity.ok(alumnoService.getAll());
+    }
+
+    @GetMapping("/nombre")
+    public ResponseEntity<List<AlumnoDTO>> getAlumnosByNombre(@RequestParam String nombre) {
+        return ResponseEntity.ok(alumnoService.getAlumnosByNombre(nombre));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AlumnoResumenDTO> getAlumnoById(@PathVariable int id) {
+        return ResponseEntity.ok(alumnoService.getById(id));
+    }
+
+    @GetMapping("/nacimiento/{fecha}")
+    public ResponseEntity<List<AlumnoDTO>> getByFechaNacimiento(@PathVariable LocalDate fecha) {
+        return ResponseEntity.ok(alumnoService.getAlumnosByFechaNacimiento(fecha));
+    }
+
+    @GetMapping("/nacimiento")
+    public ResponseEntity<List<AlumnoDTO>> getByFechaNacimientoOrdered(
+            @RequestParam(required = false, defaultValue = "false") boolean ascendente) {
+        return ResponseEntity.ok(alumnoService.getAlumnosByFechaNacimientoOrdered(ascendente));
+    }
+
+    @GetMapping("/instituto")
+    public ResponseEntity<List<AlumnoDTO>> getAlumnosByInstituto(@RequestParam(required = false) String nombre,
+                                                                 @RequestParam String ubicacion) {
+        return ResponseEntity.ok( nombre != null
+                ? alumnoService.getAlumnosByInstitutoNombreUbicacion(nombre, ubicacion)
+                : alumnoService.getAlumnosByInstitutoUbicacion(ubicacion));
+    }
+
+    @GetMapping("/asigntaura/{asignatura}")
+    public ResponseEntity<List<AlumnoResumenDTO>> getAlumnosByAsignatura(@PathVariable String asignatura) {
+        return ResponseEntity.ok(alumnoService.getByAsignaturaNombre(asignatura));
+    }
+
+    @PostMapping
+    public ResponseEntity<AlumnoDTO> createAlumno(@RequestBody CrearAlumnoDTO alumno) {
+        return ResponseEntity.ok(alumnoService.createAlumno(alumno));
+    }
+
+    @PostMapping("/carnet")
+    public ResponseEntity<AlumnoDTO> createAlumnoCarnet(@RequestBody CrearAlumnoCarnetDTO alumno) {
+        return ResponseEntity.ok(alumnoService.createAlumnoCarnet(alumno));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AlumnoDTO> updateAlumno(@PathVariable int id, @RequestBody CrearAlumnoDTO alumno) {
+        return ResponseEntity.ok(alumnoService.updateAlumno(id, alumno));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<AlumnoResumenDTO> deleteAlumno(@PathVariable int id) {
+        return ResponseEntity.ok(alumnoService.deleteAlumnoById(id));
     }
 }

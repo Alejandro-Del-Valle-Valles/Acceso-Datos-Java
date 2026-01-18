@@ -3,6 +3,8 @@ package com.alejandro.delvalle.valles.pracaticaexamen.core.entity;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
 import java.util.Set;
@@ -14,8 +16,10 @@ public class Asignatura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
     @NotBlank(message = "El nombre de la asignatura no puede estar vacío.")
     @Column(unique = true)
+    @Size(min = 3, max = 30)
     private String nombre;
 
     @ManyToMany(mappedBy = "asignaturas")

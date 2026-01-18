@@ -2,29 +2,32 @@ package com.alejandro.delvalle.valles.pracaticaexamen.adapter;
 
 import com.alejandro.delvalle.valles.pracaticaexamen.core.entity.Alumno;
 import com.alejandro.delvalle.valles.pracaticaexamen.core.entity.Asignatura;
-import com.alejandro.delvalle.valles.pracaticaexamen.dto.AlumnoDTO;
-import com.alejandro.delvalle.valles.pracaticaexamen.dto.AlumnoResumenDTO;
-import com.alejandro.delvalle.valles.pracaticaexamen.dto.CrearAlumnoDTO;
+import com.alejandro.delvalle.valles.pracaticaexamen.core.dto.alumno.AlumnoDTO;
+import com.alejandro.delvalle.valles.pracaticaexamen.core.dto.alumno.AlumnoResumenDTO;
+import com.alejandro.delvalle.valles.pracaticaexamen.core.dto.alumno.CrearAlumnoDTO;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class AlumnoAdapter {
 
     public static AlumnoDTO toDTO(Alumno alumno) {
+        UUID carnet = alumno.getCarnet() == null ? null : alumno.getCarnet().getId();
         return new AlumnoDTO(alumno.getNombre(), alumno.getFecha_nacimiento(),
-                alumno.getCarnet().getId(),
+                carnet,
                 String.format("%s, %s", alumno.getInstituto().getNombre(), alumno.getInstituto().getUbicacion()));
     }
 
-    public static AlumnoResumenDTO toAlumnoResumenDTO(Alumno alumno) {
+    public static AlumnoResumenDTO toResumenDTO(Alumno alumno) {
+        UUID carnet = alumno.getCarnet() == null ? null : alumno.getCarnet().getId();
         return new AlumnoResumenDTO(
                 alumno.getNombre(),
                 alumno.getFecha_nacimiento(),
-                alumno.getCarnet().getId(),
+                carnet,
                 String.format("%s, %s", alumno.getInstituto().getNombre(), alumno.getInstituto().getUbicacion()),
                 alumno.getAsignaturas().stream()
                         .map(Asignatura::getNombre)
-                        .collect(Collectors.toSet())
+                        .toList()
         );
     }
 
@@ -32,10 +35,8 @@ public class AlumnoAdapter {
         return new CrearAlumnoDTO(
                 alumno.getNombre(),
                 alumno.getFecha_nacimiento(),
-                alumno.getInstituto().getId(),
-                alumno.getAsignaturas().stream()
-                        .map(Asignatura::getNombre)
-                        .collect(Collectors.toSet())
+                alumno.getInstituto().getNombre(),
+                alumno.getInstituto().getUbicacion()
         );
     }
 }
