@@ -6,6 +6,7 @@ import com.alejandro.delvalle.valles.pracaticaexamen.core.dto.alumno.CrearAlumno
 import com.alejandro.delvalle.valles.pracaticaexamen.core.entity.Alumno;
 import com.alejandro.delvalle.valles.pracaticaexamen.core.service.interfaces.AlumnoService;
 import com.alejandro.delvalle.valles.pracaticaexamen.core.dto.alumno.AlumnoDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -64,17 +65,17 @@ public class AlumnoController {
     }
 
     @PostMapping
-    public ResponseEntity<AlumnoDTO> createAlumno(@RequestBody CrearAlumnoDTO alumno) {
+    public ResponseEntity<AlumnoDTO> createAlumno(@Valid @RequestBody CrearAlumnoDTO alumno) {
         return ResponseEntity.ok(alumnoService.createAlumno(alumno));
     }
 
     @PostMapping("/carnet")
-    public ResponseEntity<AlumnoDTO> createAlumnoCarnet(@RequestBody CrearAlumnoCarnetDTO alumno) {
+    public ResponseEntity<AlumnoDTO> createAlumnoCarnet(@Valid @RequestBody CrearAlumnoCarnetDTO alumno) {
         return ResponseEntity.ok(alumnoService.createAlumnoCarnet(alumno));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AlumnoDTO> updateAlumno(@PathVariable int id, @RequestBody CrearAlumnoDTO alumno) {
+    public ResponseEntity<AlumnoDTO> updateAlumno(@PathVariable int id, @Valid @RequestBody CrearAlumnoDTO alumno) {
         return ResponseEntity.ok(alumnoService.updateAlumno(id, alumno));
     }
 

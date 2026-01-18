@@ -108,7 +108,7 @@ public class AlumnoServiceImp implements AlumnoService {
 
     @Override
     public AlumnoDTO createAlumno(CrearAlumnoDTO alumno) {
-        Instituto instituto = institutoRepository.findByNombreAndUbicacion(alumno.getNombreInstituto(), alumno.getUbicacionInstituto());
+        Instituto instituto = institutoRepository.findByNombreIgnoreCaseAndUbicacionIgnoreCase(alumno.getNombreInstituto(), alumno.getUbicacionInstituto());
         if(instituto == null)
             throw new BusinessInstitutoException(String.format("El instituto %s, %s no existe y no se puede asignar al alumno",
                 alumno.getNombreInstituto(), alumno.getUbicacionInstituto()));
@@ -120,7 +120,7 @@ public class AlumnoServiceImp implements AlumnoService {
     @Override
     @Transactional
     public AlumnoDTO createAlumnoCarnet(CrearAlumnoCarnetDTO alumno) {
-        Instituto instituto = institutoRepository.findByNombreAndUbicacion(alumno.getNombreInstituto(), alumno.getUbicacionInstituto());
+        Instituto instituto = institutoRepository.findByNombreIgnoreCaseAndUbicacionIgnoreCase(alumno.getNombreInstituto(), alumno.getUbicacionInstituto());
         if(instituto == null)
             throw new BusinessInstitutoException(String.format("El instituto %s, %s no existe y no se puede asignar al alumno",
                     alumno.getNombreInstituto(), alumno.getUbicacionInstituto()));
@@ -137,7 +137,7 @@ public class AlumnoServiceImp implements AlumnoService {
     public AlumnoDTO updateAlumno(int id, CrearAlumnoDTO alumno) {
         Alumno alumnoUpdate = alumnoRepository.findById(id);
         if(alumnoUpdate == null) throw new BusinessAlumnoException("El alumno con ID " + id + " no existe.");
-        Instituto instituto = institutoRepository.findByNombreAndUbicacion(alumno.getNombreInstituto(), alumno.getUbicacionInstituto());
+        Instituto instituto = institutoRepository.findByNombreIgnoreCaseAndUbicacionIgnoreCase(alumno.getNombreInstituto(), alumno.getUbicacionInstituto());
         if(instituto == null) throw new BusinessInstitutoException(String.format("El instituto %s, %s no existe.",
                 alumno.getNombreInstituto(), alumno.getUbicacionInstituto()));
         Alumno nuevoAlumno = new Alumno(alumnoUpdate.getId(), alumno.getNombre(), alumno.getFecha_nacimiento(),

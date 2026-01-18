@@ -31,7 +31,10 @@ public class Instituto {
 
     public Instituto() {}
 
-    public Instituto(String nombre, String ubicacion) {}
+    public Instituto(String nombre, String ubicacion) {
+        this.nombre = nombre;
+        this.ubicacion = ubicacion;
+    }
 
     public Instituto(Integer id, String nombre, String ubicacion) {
         this(nombre, ubicacion);
