@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -23,16 +24,16 @@ public class Asignatura {
     private String nombre;
 
     @ManyToMany(mappedBy = "asignaturas")
-    private Set<@Valid Alumno> alumnos;
+    private List<@Valid Alumno> alumnos;
 
     public Asignatura() {}
 
-    public Asignatura(String nombre, Set<@Valid Alumno> alumnos) {
+    public Asignatura(String nombre, List<@Valid Alumno> alumnos) {
         this.alumnos = alumnos;
-        this.nombre = nombre;
+        setNombre(nombre);
     }
 
-    public Asignatura(Integer id, String nombre, Set<@Valid Alumno> alumnos) {
+    public Asignatura(Integer id, String nombre, List<@Valid Alumno> alumnos) {
         this(nombre, alumnos);
         this.id = id;
     }
@@ -50,14 +51,15 @@ public class Asignatura {
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        char firstLetter = Character.toUpperCase(nombre.trim().charAt(0));
+        this.nombre = firstLetter + nombre.trim().substring(1);
     }
 
-    public Set<Alumno> getAlumnos() {
+    public List<Alumno> getAlumnos() {
         return alumnos;
     }
 
-    public void setAlumnos(Set<Alumno> alumnos) {
+    public void setAlumnos(List<Alumno> alumnos) {
         this.alumnos = alumnos;
     }
 
