@@ -111,6 +111,14 @@ public class Alumno  {
         this.asignaturas = asignaturas;
     }
 
+    public void addAsignatura(Asignatura asignatura) {
+        if(!asignaturas.contains(asignatura)) this.asignaturas.add(asignatura);
+    }
+
+    public void removeAsignatura(Asignatura asignatura) {
+        if(asignaturas.contains(asignatura)) this.asignaturas.remove(asignatura);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

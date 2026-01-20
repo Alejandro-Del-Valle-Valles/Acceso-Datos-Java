@@ -63,6 +63,14 @@ public class Asignatura {
         this.alumnos = alumnos;
     }
 
+    public void addAlumno(Alumno alumno) {
+        if(!alumnos.contains(alumno)) this.alumnos.add(alumno);
+    }
+
+    public void removeAlumno(Alumno alumno) {
+        if(alumnos.contains(alumno)) this.alumnos.remove(alumno);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

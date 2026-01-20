@@ -79,6 +79,16 @@ public class AlumnoController {
         return ResponseEntity.ok(alumnoService.updateAlumno(id, alumno));
     }
 
+    @PutMapping("/asignaturas/{id}")
+    public ResponseEntity<AlumnoResumenDTO> addAsignaturasToAlumno(@PathVariable int id, @RequestBody List<String> asignaturas) {
+        return ResponseEntity.ok(alumnoService.addAsignaturasToAlumno(id, asignaturas));
+    }
+
+    @PutMapping("/{id}/{asignatura}")
+    public  ResponseEntity<AlumnoResumenDTO> removeAsignatura(@PathVariable int id, @PathVariable String asignatura) {
+        return ResponseEntity.ok(alumnoService.removeAsignaturaAlumno(id, asignatura));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<AlumnoResumenDTO> deleteAlumno(@PathVariable int id) {
         return ResponseEntity.ok(alumnoService.deleteAlumnoById(id));

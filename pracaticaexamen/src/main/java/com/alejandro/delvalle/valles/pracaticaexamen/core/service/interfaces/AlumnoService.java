@@ -18,6 +18,8 @@ public interface AlumnoService {
     List<AlumnoDTO> getAlumnosByInstitutoNombreUbicacion(String nombre, String ubicacion);
     List<AlumnoResumenDTO> getByAsignaturaNombre(String asignatura);
     AlumnoResumenDTO getById(int id);
+    AlumnoResumenDTO addAsignaturasToAlumno(int id, List<String> asignaturas);
+    AlumnoResumenDTO removeAsignaturaAlumno(int id, String asignatura);
     AlumnoDTO createAlumno(CrearAlumnoDTO alumno);
     AlumnoDTO createAlumnoCarnet(CrearAlumnoCarnetDTO alumno);
     AlumnoDTO updateAlumno(int id, CrearAlumnoDTO alumno);
