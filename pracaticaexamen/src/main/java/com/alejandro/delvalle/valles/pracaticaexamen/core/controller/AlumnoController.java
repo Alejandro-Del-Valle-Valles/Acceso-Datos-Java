@@ -93,4 +93,9 @@ public class AlumnoController {
     public ResponseEntity<AlumnoResumenDTO> deleteAlumno(@PathVariable int id) {
         return ResponseEntity.ok(alumnoService.deleteAlumnoById(id));
     }
+
+    @PutMapping("/desvincular/{id}")
+    public ResponseEntity<AlumnoDTO> removeCarnet(@PathVariable int id) {
+        return ResponseEntity.ok(alumnoService.disconnectCarnet(id));
+    }
 }

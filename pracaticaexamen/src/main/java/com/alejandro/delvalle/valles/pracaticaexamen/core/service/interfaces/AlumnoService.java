@@ -24,4 +24,5 @@ public interface AlumnoService {
     AlumnoDTO createAlumnoCarnet(CrearAlumnoCarnetDTO alumno);
     AlumnoDTO updateAlumno(int id, CrearAlumnoDTO alumno);
     AlumnoResumenDTO deleteAlumnoById(int id);
+    AlumnoDTO disconnectCarnet(int id);
 }

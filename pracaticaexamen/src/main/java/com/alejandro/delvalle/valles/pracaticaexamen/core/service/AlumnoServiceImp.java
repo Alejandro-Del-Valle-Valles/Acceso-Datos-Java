@@ -11,10 +11,12 @@ import com.alejandro.delvalle.valles.pracaticaexamen.core.entity.Carnet;
 import com.alejandro.delvalle.valles.pracaticaexamen.core.entity.Instituto;
 import com.alejandro.delvalle.valles.pracaticaexamen.core.repository.AlumnoRepository;
 import com.alejandro.delvalle.valles.pracaticaexamen.core.repository.AsignaturaRepository;
+import com.alejandro.delvalle.valles.pracaticaexamen.core.repository.CarnetRepository;
 import com.alejandro.delvalle.valles.pracaticaexamen.core.repository.InstitutoRepository;
 import com.alejandro.delvalle.valles.pracaticaexamen.core.service.interfaces.AlumnoService;
 import com.alejandro.delvalle.valles.pracaticaexamen.exceptions.BusinessAlumnoException;
 import com.alejandro.delvalle.valles.pracaticaexamen.exceptions.BusinessAsignaturaException;
+import com.alejandro.delvalle.valles.pracaticaexamen.exceptions.BusinessCarnetException;
 import com.alejandro.delvalle.valles.pracaticaexamen.exceptions.BusinessInstitutoException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +32,15 @@ public class AlumnoServiceImp implements AlumnoService {
     private final AlumnoRepository alumnoRepository;
     private final InstitutoRepository institutoRepository;
     private final AsignaturaRepository asignaturaRepository;
+    private final CarnetRepository carnetRepository;
 
     @Autowired
-    public AlumnoServiceImp(AlumnoRepository alumnoRepository, InstitutoRepository institutoRepository, AsignaturaRepository asignaturaRepository) {
+    public AlumnoServiceImp(AlumnoRepository alumnoRepository, InstitutoRepository institutoRepository,
+                            AsignaturaRepository asignaturaRepository, CarnetRepository carnetRepository) {
         this.alumnoRepository = alumnoRepository;
         this.institutoRepository = institutoRepository;
         this.asignaturaRepository = asignaturaRepository;
+        this.carnetRepository = carnetRepository;
     }
 
 
@@ -168,6 +173,7 @@ public class AlumnoServiceImp implements AlumnoService {
     }
 
     @Override
+    @Transactional
     public AlumnoDTO updateAlumno(int id, CrearAlumnoDTO alumno) {
         Alumno alumnoUpdate = alumnoRepository.findById(id);
         if(alumnoUpdate == null) throw new BusinessAlumnoException("El alumno con ID " + id + " no existe.");
@@ -186,5 +192,19 @@ public class AlumnoServiceImp implements AlumnoService {
         if(alumno == null) throw new BusinessAlumnoException("El alumno con ID " + id + " no existe.");
         alumnoRepository.deleteById(id);
         return AlumnoAdapter.toResumenDTO(alumno);
+    }
+
+    @Override
+    @Transactional
+    public AlumnoDTO disconnectCarnet(int id) {
+        Alumno alumno = alumnoRepository.findById(id);
+        if(alumno == null) throw new BusinessAlumnoException("El alumno con ID " + id + " no existe.");
+        Carnet carnet = alumno.getCarnet();
+        if(carnet == null) throw new BusinessCarnetException("El alumno no tiene carnet asignado");
+        alumno.setCarnet(null);
+        carnetRepository.delete(carnet);
+
+        alumnoRepository.save(alumno);
+        return AlumnoAdapter.toDTO(alumno);
     }
 }
