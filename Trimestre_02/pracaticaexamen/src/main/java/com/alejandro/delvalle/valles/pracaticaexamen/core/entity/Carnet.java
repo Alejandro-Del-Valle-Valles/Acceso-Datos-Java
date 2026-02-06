@@ -10,8 +10,6 @@ import java.util.UUID;
 @Entity
 public class Carnet {
 
-    //TODO: Crear lógica Controller Carnet
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
